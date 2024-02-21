@@ -1,0 +1,105 @@
+
+h1, h2{
+  text-align: center;
+}
+
+.container {
+  width: 100%;
+}
+.container div {
+  display: inline-block;
+  width: 45%; 
+  margin-right: 5px;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+
+/*Centrar Tabla*/
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/*Tabla*/
+table {
+    border-collapse: collapse;
+    width: 500px;
+    height: 500px;
+}
+
+/*Borde de la Tabla*/
+td{
+  border-width: 1px;
+  border-style: solid;
+  width: 50px;
+  height: 50px;
+  position: relative;
+}
+
+/*Colorear celdas blancas*/
+tr:nth-child(even) td:nth-child(even),
+tr:nth-child(odd)td:nth-child(odd) {
+  background-color: #eee;
+}
+
+/*Colorear celdas oscuras*/
+tr:nth-child(even) td:nth-child(odd),
+tr:nth-child(odd) td:nth-child(even) {
+  background-color: #7a7a7a;
+}
+
+/*Como la imagen de las piezas se coloca en la celda*/
+.pieza-img {
+  width: 80%;
+  height: 80%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
+}
+
+table tr:first-child td,
+table tr:last-child td,
+table td:first-child,
+table td:last-child {
+  background-color: rgb(255, 255, 255) !important;
+  border: none;
+  border-left: none;
+  text-align: center;
+  font-weight: bold;
+  font-size: 2em;
+}
+
+/* Cuando el mouse pasa por encima de la celda */
+td:hover {
+  background-color: #f5f5f5;
+  transform: scale(1.1);
+}
+
+.movimientoPosible::after {
+  content: "";
+  display: block;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(60, 60, 60);
+  border-radius: 50%;
+}
+
+.movimientoAtaque::after {
+  content: "";
+  display: block;
+  margin: auto;
+  width: 20px;
+  height: 20px;
+  background-color: rgb(203, 57, 57);
+  border-radius: 50%;
+  z-index: 2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
