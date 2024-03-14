@@ -138,9 +138,18 @@
         </div>
         <div>
             <h2>Historial de Movimientos</h2>
-            <textarea id="historial" rows="10" cols="50"></textarea>
+            <pre id="historial" contenteditable="true"></pre>
             <p></p>
-            <button onclick="importarDocumento()">importar</button>
+            <input type="file" id="fileInput" style="display: none;" onchange="loadFile()"/>
+            <div style="display: flex; justify-content: space-between;">
+                <button style="margin-right: 50px;" id="loadButton" onclick="document.getElementById('fileInput').click()">Importar</button>
+                <button style="margin-right: 50px;" id="otherButton" onclick="nextStep()">Siguiente Paso</button>
+                <button style="margin-right: 50px;" id="prevButton" onclick="previousStep()">Paso Anterior</button>
+                <button id="extractButton" onclick="extractMoves()">Extraer Movimientos</button>
+            </div>
+            <p id="step">Paso: 0</p>
+            <p id="firstMove"></p>
+            <p id="secondMove"></p>
         </div>
     </div>
 </body>
