@@ -458,6 +458,7 @@ function mostrarMovimientosRey(celda) {
 //Paso de la partida en la que nos encontramos
 var currentStep = 0;
 var lineNumber = 0;
+var fileImported = false;
 
 function loadFile() {
     var file = document.getElementById('fileInput').files[0];
@@ -467,6 +468,7 @@ function loadFile() {
     reader.onload = function (e) {
         var textArea = document.getElementById('historial');
         textArea.innerHTML = e.target.result;
+        fileImported = true;
     };
     reader.readAsText(file);
 }
@@ -481,6 +483,7 @@ function countLines() {
 }
 
 function nextStep() {
+    if (!fileImported) return;
     if (lineNumber < countLines()) {
         currentStep++;
         document.getElementById('step').textContent = 'Paso: ' + currentStep;
@@ -500,6 +503,7 @@ function nextStep() {
 }
 
 function previousStep() {
+    if (!fileImported) return;
     if (currentStep > 1) {
         currentStep--;
         document.getElementById('step').textContent = 'Paso: ' + currentStep;
@@ -627,14 +631,25 @@ function moverPiezaImport(color) {
 }
 
 function moverPeon(movimiento, color) {
-    var columna = movimiento.charAt(0);
-    columna = columna.charCodeAt(0) - 96;
-    var fila = 9 - parseInt(movimiento.charAt(1), 10);
+    var comer = false;
     var tablero = document.getElementById('tablero');
 
     if (!tablero) {
         console.error('No se pudo encontrar el tablero');
         return;
+    }
+
+    if(movimiento.length < 3){
+        var columna = movimiento.charAt(0);
+        columna = columna.charCodeAt(0) - 96;
+        var fila = 9 - parseInt(movimiento.charAt(1), 10);
+    } else if(movimiento.length === 4){
+        if(movimiento.charAt(1) === 'x'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+            comer = true;
+        }
     }
 
     if (fila < 0 || fila >= tablero.rows.length) {
@@ -648,6 +663,26 @@ function moverPeon(movimiento, color) {
     if (celda.querySelector('.pieza-img')) {
         celda.innerHTML = '';
     }
+
+    if (comer) {
+        if(color === 'Blanco'){
+            if(tablero.rows[fila + 1] && tablero.rows[fila + 1].cells[columna + 1].querySelector(`img[src="images/peonBlanco.png"]`)){
+                moverPieza(tablero.rows[fila + 1].cells[columna + 1], celda);
+            } 
+            if (tablero.rows[fila + 1] && tablero.rows[fila + 1].cells[columna - 1].querySelector(`img[src="images/peonBlanco.png"]`)){
+                moverPieza(tablero.rows[fila + 1].cells[columna - 1], celda);
+            }
+        } else if(color === 'Negro'){
+            if(tablero.rows[fila - 1] && tablero.rows[fila - 1].cells[columna + 1].querySelector(`img[src="images/peonNegro.png"]`)){
+                moverPieza(tablero.rows[fila - 1].cells[columna + 1], celda);
+            } 
+            if (tablero.rows[fila - 1] && tablero.rows[fila - 1].cells[columna - 1].querySelector(`img[src="images/peonNegro.png"]`)){
+                moverPieza(tablero.rows[fila - 1].cells[columna - 1], celda);
+            }
+        }
+        return;
+    }
+
     if (color === 'Blanco') {
         //revisar las dos celdas por debajo de la celda seleccionada
         if (tablero.rows[fila + 1] && tablero.rows[fila + 1].cells[columna].querySelector('.pieza-img')) {
@@ -668,6 +703,13 @@ function moverPeon(movimiento, color) {
 }
 
 function moverCaballo(movimiento, color) {
+    var tablero = document.getElementById('tablero');
+
+    if (!tablero) {
+        console.error('No se pudo encontrar el tablero');
+        return;
+    }
+
     var columnaEspecifica = null;
     
     if(movimiento.length === 3){
@@ -676,20 +718,21 @@ function moverCaballo(movimiento, color) {
         var fila = 9 - parseInt(movimiento.charAt(2), 10);
     } else if(movimiento.length === 4){
         if(movimiento.charAt(1) === 'x'){
-
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
         } else {
             columnaEspecifica = movimiento.charAt(1).charCodeAt(0) - 96;
             var columna = movimiento.charAt(2);
             columna = columna.charCodeAt(0) - 96;
             var fila = 9 - parseInt(movimiento.charAt(3), 10);
         }
-    }
-    
-    var tablero = document.getElementById('tablero');
-
-    if (!tablero) {
-        console.error('No se pudo encontrar el tablero');
-        return;
+    } else if(movimiento.length === 5){
+        if(movimiento.charAt(1) === 'x' && movimiento.charAt(4) === '+'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        }
     }
 
     if (fila < 0 || fila >= tablero.rows.length) {
@@ -725,15 +768,35 @@ function moverCaballo(movimiento, color) {
     }
 }
 
-function moverAlfil(movimiento, color) {
-    var columna = movimiento.charAt(1);
-    columna = columna.charCodeAt(0) - 96;
-    var fila = 9 - parseInt(movimiento.charAt(2), 10);
+function moverAlfil(movimiento, color, reina = false) {
+
     var tablero = document.getElementById('tablero');
 
     if (!tablero) {
         console.error('No se pudo encontrar el tablero');
         return;
+    }
+
+    if(movimiento.length === 3){
+        var columna = movimiento.charAt(1);
+        columna = columna.charCodeAt(0) - 96;
+        var fila = 9 - parseInt(movimiento.charAt(2), 10);
+    } else if(movimiento.length === 4){
+        if(movimiento.charAt(1) === 'x'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        } else {
+            var columna = movimiento.charAt(1);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(2), 10);
+        }
+    } else if(movimiento.length === 5){
+        if(movimiento.charAt(1) === 'x' && movimiento.charAt(4) === '+'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        }
     }
 
     if (fila < 0 || fila >= tablero.rows.length) {
@@ -759,24 +822,52 @@ function moverAlfil(movimiento, color) {
             }
 
             var celdaDiagonal = tablero.rows[nuevaFila].cells[nuevaColumna];
-            // Aquí puedes revisar la celdaDiagonal
-            console.log(color);
-            if (celdaDiagonal.querySelector(`img[src="images/alfil${color}.png"]`)) {
+            if(reina && celdaDiagonal.querySelector(`img[src="images/reina${color}.png`)){
+                moverPieza(celdaDiagonal, celda);
+            }
+
+            if (!reina && celdaDiagonal.querySelector(`img[src="images/alfil${color}.png"]`)) {
                 moverPieza(celdaDiagonal, celda);
             }
         }
     }
 }
 
-function moverTorre(movimiento, color) {
-    var columna = movimiento.charAt(1);
-    columna = columna.charCodeAt(0) - 96;
-    var fila = 9 - parseInt(movimiento.charAt(2), 10);
+function moverTorre(movimiento, color, reina = false) {
+    
     var tablero = document.getElementById('tablero');
+    var columnaEspecifica = null;
 
     if (!tablero) {
         console.error('No se pudo encontrar el tablero');
         return;
+    }
+
+    if(movimiento.length === 3){
+        var columna = movimiento.charAt(1);
+        columna = columna.charCodeAt(0) - 96;
+        var fila = 9 - parseInt(movimiento.charAt(2), 10);
+    } else if(movimiento.length === 4){
+        if(movimiento.charAt(1) === 'x'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        } else if(movimiento.charAt(3) === '+'){
+            var columna = movimiento.charAt(1);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(2), 10);
+        } else {
+            columnaEspecifica = movimiento.charAt(1).charCodeAt(0) - 96;
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        }
+    } else if(movimiento.length === 5){
+        if(movimiento.charAt(1) === 'x' && movimiento.charAt(4) === '+'){
+            var columna = movimiento.charAt(2);
+            columna = columna.charCodeAt(0) - 96;
+            var fila = 9 - parseInt(movimiento.charAt(3), 10);
+        }
     }
 
     if (fila < 0 || fila >= tablero.rows.length) {
@@ -801,10 +892,18 @@ function moverTorre(movimiento, color) {
                 break;
             }
 
+            if (columnaEspecifica !== null && nuevaColumna !== columnaEspecifica) {
+                continue;
+            }
+
             var celdaMovimiento = tablero.rows[nuevaFila].cells[nuevaColumna];
 
+            if(reina && celdaMovimiento.querySelector(`img[src="images/reina${color}.png`)){
+                moverPieza(celdaMovimiento, celda);
+            }
+
             // Aquí puedes revisar la celdaMovimiento
-            if (celdaMovimiento.querySelector(`img[src="images/torre${color}.png"]`)) {
+            if (!reina && celdaMovimiento.querySelector(`img[src="images/torre${color}.png"]`)) {
                 moverPieza(celdaMovimiento, celda);
             }
             // Si hay una pieza en celdaMovimiento, detener la revisión
@@ -817,14 +916,15 @@ function moverTorre(movimiento, color) {
 }
 
 function moverReina(movimiento, color) {
-    moverAlfil(movimiento, color);
-    moverTorre(movimiento, color);
+    moverAlfil(movimiento, color, true);
+    moverTorre(movimiento, color, true);
 }
 
 function moverRey(movimiento, color) {
-    var columna = movimiento.charAt(0);
+    alert (movimiento);
+    var columna = movimiento.charAt(1);
     columna = columna.charCodeAt(0) - 96;
-    var fila = 9 - parseInt(movimiento.charAt(1), 10);
+    var fila = 9 - parseInt(movimiento.charAt(2), 10);
     var tablero = document.getElementById('tablero');
 
     if (!tablero) {
@@ -839,10 +939,30 @@ function moverRey(movimiento, color) {
 
     var celda = tablero.rows[fila].cells[columna];
 
-    if (color === 'Blanco') {
- 
-    } else if (color === 'Negro') {
+    //revisar las 8 posiciones
+    var movimientosRey = [
+        [-1, -1], [-1, 0], [-1, 1], [0, -1],
+        [0, 1], [1, -1], [1, 0], [1, 1]
+    ];
 
+    for (var i = 0; i < movimientosRey.length; i++) {
+        var movimientos = movimientosRey[i];
+        var nuevaFila = fila + movimientos[0];
+        var nuevaColumna = columna + movimientos[1];
+
+        // Comprobar si nuevaFila y nuevaColumna están dentro de los límites del tablero
+        if (nuevaFila >= 0 && nuevaFila < tablero.rows.length && nuevaColumna >= 0 && nuevaColumna < tablero.rows[0].cells.length) {
+            var celdaDestino = tablero.rows[nuevaFila].cells[nuevaColumna];
+            var piezaDestino = celdaDestino.querySelector('img');
+
+            // Comprobar si la celda destino está ocupada por una pieza del mismo color
+            if (piezaDestino && piezaDestino.src.includes(color)) {
+                continue; // Saltar a la siguiente iteración si la celda destino está ocupada por una pieza del mismo color
+            }
+
+            // Mover el rey a la celda destino
+            moverPieza(celdaDestino, celda);
+        }
     }
 }
 
