@@ -16,40 +16,40 @@ function agregarPieza(celda, tipo) {
     // Asigna la ruta de la imagen según el tipo de pieza
     switch (tipo) {
         case 'peonBlanco':
-            img.src = '/images/peonBlanco.png';
+            img.src = 'images/peonBlanco.png';
             break;
         case 'peonNegro':
-            img.src = '/images/peonNegro.png';
+            img.src = 'images/peonNegro.png';
             break;
         case 'caballoBlanco':
-            img.src = '/images/caballoBlanco.png';
+            img.src = 'images/caballoBlanco.png';
             break;
         case 'caballoNegro':
-            img.src = '/images/caballoNegro.png';
+            img.src = 'images/caballoNegro.png';
             break;
         case 'alfilBlanco':
-            img.src = '/images/alfilBlanco.png';
+            img.src = 'images/alfilBlanco.png';
             break;
         case 'alfilNegro':
-            img.src = '/images/alfilNegro.png';
+            img.src = 'images/alfilNegro.png';
             break;
         case 'torreBlanco':
-            img.src = '/images/torreBlanco.png';
+            img.src = 'images/torreBlanco.png';
             break;
         case 'torreNegro':
-            img.src = '/images/torreNegro.png';
+            img.src = 'images/torreNegro.png';
             break;
         case 'reinaBlanco':
-            img.src = '/images/reinaBlanco.png';
+            img.src = 'images/reinaBlanco.png';
             break;
         case 'reinaNegro':
-            img.src = '/images/reinaNegro.png';
+            img.src = 'images/reinaNegro.png';
             break;
         case 'reyBlanco':
-            img.src = '/images/reyBlanco.png';
+            img.src = 'images/reyBlanco.png';
             break;
         case 'reyNegro':
-            img.src = '/images/reyNegro.png';
+            img.src = 'images/reyNegro.png';
             break;
         default:
             console.error('Tipo de pieza no válido');
