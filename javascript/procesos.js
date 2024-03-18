@@ -1,6 +1,8 @@
 var celdaSeleccionada;
 var turno = 'Blanco';
-
+var currentStep = 0;
+var lineNumber = 0;
+var fileImported = false;
 
 function agregarPieza(celda, tipo) {
     // Elimina cualquier pieza existente en la celda    
@@ -455,17 +457,12 @@ function mostrarMovimientosRey(celda) {
 
 //Ahora en adelante es para la partida importada
 
-//Paso de la partida en la que nos encontramos
-var currentStep = 0;
-var lineNumber = 0;
-var fileImported = false;
-
 function loadFile() {
     var file = document.getElementById('fileInput').files[0];
     if (!file) return;
 
     var reader = new FileReader();
-    reader.onload = function (e) {
+    reader.onload = function(e) {
         var textArea = document.getElementById('historial');
         textArea.innerHTML = e.target.result;
         fileImported = true;
@@ -473,9 +470,50 @@ function loadFile() {
     reader.readAsText(file);
 }
 
-function name(params) {
+function writeFile(file){
+    if (!file) return;
 
+    fetch(file)
+        .then(response => response.text())
+        .then(data => {
+            var textArea = document.getElementById('historial');
+            textArea.innerHTML = data;
+            fileImported = true;
+        })
+        .catch(error => console.error('Error:', error));
 }
+
+function seleccionarJuego(){
+    reiniciar();
+    var juego = document.getElementById('juegoSelect').value;
+    var file;
+    switch(juego) {
+        case 'juego1':
+            file = 'Juegos/Juego1.txt';
+            break;
+        case 'juego2':
+            file = 'Juegos/Juego2.txt';
+            break;
+        case 'juego3':
+            file = 'Juegos/Juego3.txt';
+            break;
+        default:
+            console.log('Juego no reconocido');
+            return;
+    }
+    writeFile(file);
+}
+
+function reiniciar(){
+    inicializarTablero();
+    currentStep = 0;
+    lineNumber = 0;
+    document.getElementById('step').textContent = 'Paso: ' + currentStep;
+    document.getElementById('firstMove').textContent = 'Primer movimiento: ';
+    document.getElementById('secondMove').textContent = 'Segundo movimiento: ';
+    highlightLine(lineNumber);
+}
+
 function countLines() {
     var historial = document.getElementById('historial');
     var lines = historial.innerHTML.split('\n');
@@ -497,8 +535,6 @@ function nextStep() {
             highlightLine(lineNumber);
             moverPiezaImport(turno);
         }
-
-
     }
 }
 
@@ -517,7 +553,6 @@ function previousStep() {
             extractMoves(lineNumber);
             moverPiezaImport(turno);
         }
-
     }
 }
 
@@ -545,13 +580,22 @@ function highlightLine(lineNumber) {
     var historial = document.getElementById('historial');
     var content = historial.textContent.replace(/\r\n/g, '\n');
     var lines = content.split('\n');
-    if (lineNumber < 1 || lineNumber > lines.length) {
-        return;
-    }
+
     // Remove existing marks
     for (var i = 0; i < lines.length; i++) {
         lines[i] = lines[i].replace(/<mark>|<\/mark>/g, '');
     }
+
+    // If lineNumber is 0, remove all highlights and return
+    if (lineNumber === 0) {
+        historial.innerHTML = lines.join('\n');
+        return;
+    }
+
+    if (lineNumber < 1 || lineNumber > lines.length) {
+        return;
+    }
+
     // Add new mark
     lines[lineNumber - 1] = '<mark>' + lines[lineNumber - 1] + '</mark>';
     historial.innerHTML = lines.join('\n');
@@ -990,4 +1034,59 @@ function castling(movimiento, color) {
             turno = 'Blanco';
         }
     }
+}
+
+var lang = {
+    es: {
+        title: "Vizualizador de Ajedrez",
+        turn: "Turno: blanco",
+        history: "Historial de Movimientos",
+        selectGame: "Selecciona un juego:",
+        step: "Paso: 0",
+        firstMove: "Primer movimiento",
+        secondMove: "Segundo movimiento",
+        importar: "Importar",
+        siguientePaso: "Siguiente Paso",
+        pasoAnterior: "Paso Anterior",
+        juego1: "Juego 1",
+        juego2: "Juego 2",
+        juego3: "Juego 3",
+        reiniciar: "Reiniciar",
+        seleccionar: "Seleccionar"
+    },
+    en: {
+        title: "Chess Viewer",
+        turn: "Turn: white",
+        history: "Move History",
+        selectGame: "Select a game:",
+        step: "Step: 0",
+        firstMove: "First move:",
+        secondMove: "Second move:",
+        importar: "Import",
+        siguientePaso: "Next Step",
+        pasoAnterior: "Previous Step",
+        juego1: "Game 1",
+        juego2: "Game 2",
+        juego3: "Game 3",
+        reiniciar: "Restart",
+        seleccionar: "Select"
+    }
+};
+
+function changeLang(selectedLang) {
+    document.getElementById('title').textContent = lang[selectedLang].title;
+    document.getElementById('turnoMostrador').textContent = lang[selectedLang].turn;
+    document.getElementById('historialTitulo').textContent = lang[selectedLang].history;
+    document.getElementById('juego').textContent = lang[selectedLang].selectGame;
+    document.getElementById('step').textContent = lang[selectedLang].step;
+    document.getElementById('firstMove').textContent = lang[selectedLang].firstMove;
+    document.getElementById('secondMove').textContent = lang[selectedLang].secondMove;
+    document.querySelector('#juegoSelect option[value="juego1"]').textContent = lang[selectedLang].juego1;
+    document.querySelector('#juegoSelect option[value="juego2"]').textContent = lang[selectedLang].juego2;
+    document.querySelector('#juegoSelect option[value="juego3"]').textContent = lang[selectedLang].juego3;
+    document.getElementById('loadButton').textContent = lang[selectedLang].importar;
+    document.getElementById('otherButton').textContent = lang[selectedLang].siguientePaso;
+    document.getElementById('prevButton').textContent = lang[selectedLang].pasoAnterior;
+    document.getElementById('reiniciar').textContent = lang[selectedLang].reiniciar;
+    document.getElementById('selectButton').textContent = lang[selectedLang].seleccionar;
 }

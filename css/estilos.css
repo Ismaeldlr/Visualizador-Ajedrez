@@ -1,14 +1,15 @@
-
-h1, h2{
+h1,
+h2 {
   text-align: center;
 }
 
 .container {
   width: 100%;
 }
+
 .container div {
   display: inline-block;
-  width: 45%; 
+  width: 45%;
   margin-right: 5px;
   box-sizing: border-box;
   vertical-align: top;
@@ -22,13 +23,13 @@ h1, h2{
 
 /*Tabla*/
 table {
-    border-collapse: collapse;
-    width: 500px;
-    height: 500px;
+  border-collapse: collapse;
+  width: 500px;
+  height: 500px;
 }
 
 /*Borde de la Tabla*/
-td{
+td {
   border-width: 1px;
   border-style: solid;
   width: 50px;
@@ -101,5 +102,43 @@ td:hover {
   left: 50%;
   transform: translate(-50%, -50%);
 }
+.btnReiniciar {
+  font-size: 18px;
+  padding: 5px 10px;
+  float: right;
+}
 
+.juego-selector {
+  width: 200px;
+  margin: 20px auto;
+  padding: 10px;
+}
 
+.juego-selector label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.juego-selector select {
+  width: 100%;
+  padding: 5px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  appearance: none;
+  background-color: #fff;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%232C3C3C" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right .75em top 50%, 0 0;
+  background-size: .65em auto, 100%;
+}
+
+.juego-selector button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}

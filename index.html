@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +8,17 @@
     <script src="javascript/procesos.js"></script>
     <title>Vizualizador de Ajedrez</title>
 </head>
+
 <body onload="inicializarTablero()">
-    <h1>Vizualizador de Ajedrez</h1>
+    <div>
+        <select id="lang" onchange="changeLang(this.value)">
+            <option value="es">Español</option>
+            <option value="en">English</option>
+        </select>
+        <h1 id="title">Vizualizador de Ajedrez</h1>
+    </div>
+    
+
     <div class="container">
         <div class>
             <h2 id="turnoMostrador">Turno: blanco</h2>
@@ -134,23 +144,34 @@
                     <td></td>
                 </tr>
             </table>
-            <button onclick="inicializarTablero()">Reiniciar</button>
+            <button id="reiniciar" class="btnReiniciar" onclick="reiniciar()">Reiniciar</button>
         </div>
         <div>
-            <h2>Historial de Movimientos</h2>
+            <h2 id="historialTitulo">Historial de Movimientos</h2>
             <pre id="historial" contenteditable="true"></pre>
             <p></p>
-            <input type="file" id="fileInput" style="display: none;" onchange="loadFile()"/>
+            <input type="file" id="fileInput" style="display: none;" onchange="loadFile()" />
             <div style="display: flex; justify-content: space-between;">
                 <button style="margin-right: 50px;" id="loadButton" onclick="document.getElementById('fileInput').click()">Importar</button>
                 <button style="margin-right: 50px;" id="otherButton" onclick="nextStep()">Siguiente Paso</button>
                 <button style="margin-right: 50px;" id="prevButton" onclick="previousStep()">Paso Anterior</button>
-                <button id="extractButton" onclick="extractMoves()">Extraer Movimientos</button>
+            </div>
+
+            <div class="juego-selector">
+                <label id="juego">Selecciona un juego:</label>
+                <select id="juegoSelect" name="juego">
+                    <option value="juego1">Juego 1</option>
+                    <option value="juego2">Juego 2</option>
+                    <option value="juego3">Juego 3</option>
+                </select>
+                <p></p>
+                <button id="selectButton" onclick="seleccionarJuego()">Seleccionar</button>
             </div>
             <p id="step">Paso: 0</p>
-            <p id="firstMove"></p>
-            <p id="secondMove"></p>
+            <p id="firstMove">Primer movimiento:</p>
+            <p id="secondMove">Segundo movimiento:</p>
         </div>
     </div>
 </body>
+
 </html>
